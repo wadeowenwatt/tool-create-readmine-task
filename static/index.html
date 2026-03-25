@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Redmine Issue Creator</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <!-- ===== Header ===== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+          <rect x="9" y="3" width="6" height="4" rx="1"/>
+          <path d="M9 12h6M9 16h4"/>
+        </svg>
+        <span class="brand-name">Redmine Issue Creator</span>
+      </div>
+      <div id="user-badge" class="user-badge hidden">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+        </svg>
+        <span id="user-name">—</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Main ===== -->
+  <main class="app-main">
+    <!-- Status banner -->
+    <div id="status-banner" class="status-banner hidden"></div>
+
+    <div class="layout-two-col">
+
+      <!-- ── LEFT: Upload + Shared Config ── -->
+      <section class="card" id="card-upload">
+        <div class="card-header">
+          <span class="card-step">1</span>
+          <h2>Upload & Cấu hình</h2>
+        </div>
+        <div class="card-body">
+
+          <!-- Drop zone -->
+          <div id="drop-zone" class="drop-zone" role="button" tabindex="0"
+               aria-label="Kéo thả file markdown hoặc click để chọn">
+            <svg class="drop-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <p class="drop-label">Kéo &amp; thả file <strong>.md</strong> vào đây</p>
+            <p class="drop-sub">hoặc</p>
+            <label class="btn btn-outline btn-sm" for="file-input">Chọn file</label>
+            <input type="file" id="file-input" accept=".md,.markdown,.txt" hidden />
+          </div>
+
+          <!-- File info -->
+          <div id="file-info" class="file-info hidden">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            <span id="file-name">—</span>
+            <button class="btn-icon" id="btn-remove-file" title="Xóa file">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Extra context -->
+          <div class="field">
+            <label class="field-label" for="extra-context">Ngữ cảnh bổ sung (tùy chọn)</label>
+            <textarea id="extra-context" class="field-input" rows="2"
+                      placeholder="VD: Đây là task cho sprint Q2, ưu tiên cao..."></textarea>
+          </div>
+
+          <!-- Divider -->
+          <div class="config-divider">Cấu hình chung cho tất cả issues</div>
+
+          <!-- Project + Tracker -->
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label" for="project-id">Project <span class="required">*</span></label>
+              <div class="select-wrapper">
+                <select id="project-id" class="field-input" required>
+                  <option value="">— Chọn —</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label class="field-label" for="tracker-id">Tracker <span class="required">*</span></label>
+              <div class="select-wrapper">
+                <select id="tracker-id" class="field-input" required>
+                  <option value="">— Chọn —</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Parent + Priority -->
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label" for="parent-issue-id">Parent Task ID</label>
+              <input type="number" id="parent-issue-id" class="field-input" placeholder="VD: 1234" min="1" />
+            </div>
+            <div class="field">
+              <label class="field-label" for="priority-id">Priority</label>
+              <div class="select-wrapper">
+                <select id="priority-id" class="field-input">
+                  <option value="1">Low</option>
+                  <option value="2" selected>Normal</option>
+                  <option value="3">High</option>
+                  <option value="4">Urgent</option>
+                  <option value="5">Immediate</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dates -->
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label" for="start-date">Start date <span class="required">*</span></label>
+              <input type="date" id="start-date" class="field-input" required />
+            </div>
+            <div class="field">
+              <label class="field-label" for="due-date">Due date <span class="required">*</span></label>
+              <input type="date" id="due-date" class="field-input" required />
+            </div>
+          </div>
+
+          <!-- Assign (readonly) -->
+          <div class="field">
+            <label class="field-label">Assigned to</label>
+            <div class="assign-display">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+              </svg>
+              <span id="assign-display">Chính mình (tự động)</span>
+            </div>
+          </div>
+
+          <!-- Analyze button -->
+          <button class="btn btn-primary btn-block" id="btn-analyze" disabled>
+            <svg class="btn-icon-left spin hidden" id="analyze-spinner"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+            </svg>
+            <span id="btn-analyze-text">✨ Phân tích bằng AI</span>
+          </button>
+
+        </div>
+      </section>
+
+      <!-- ── RIGHT: Issue Cards ── -->
+      <section class="card" id="card-issues">
+        <div class="card-header">
+          <span class="card-step">2</span>
+          <h2>Issues được trích xuất</h2>
+          <span id="issue-count-badge" class="issue-count-badge hidden"></span>
+          <button class="btn btn-success btn-sm hidden" id="btn-create-all" style="margin-left:auto">
+            🚀 Tạo tất cả
+          </button>
+        </div>
+        <div class="card-body" id="issues-container">
+          <!-- Placeholder -->
+          <div id="issues-placeholder" class="issues-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+              <rect x="9" y="3" width="6" height="4" rx="1"/>
+              <path d="M9 12h6M9 16h4"/>
+            </svg>
+            <p>Upload file markdown và nhấn<br/><strong>✨ Phân tích bằng AI</strong> để bắt đầu</p>
+          </div>
+          <!-- Issue cards sẽ được inject vào đây -->
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="app-footer">
+    <span>Redmine Issue Creator v2.0</span>
+    <span class="separator">·</span>
+    <a href="/docs" target="_blank">API Docs</a>
+    <span class="separator">·</span>
+    <span>Powered by Claude</span>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
